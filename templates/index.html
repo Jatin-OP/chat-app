@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>My Chat App</title>
+    <link rel="stylesheet" href="../static/index.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+</head>
+
+<body>
+    <div class="nav">
+        <div class="div3">
+            <h3 class="user-info">Hi <span>{{ current_user.username }}</span></h3>
+        </div>
+        <div class="div1">
+            <h1 class="app-name">LinkedUp</h1>
+        </div>
+        <div class="div2">
+            <h3 class="user-info"><a href="{{url_for("logout")}}">Logout</a></h3>
+        </div>
+    </div>
+    <br>
+
+    <div class="main">
+        <div class="create-room">
+            <div>
+                <h2>Create a Room</h2>
+                <div class="create-room-inner" style="height: 10vh;">
+                    <input type="text" id="room-input" placeholder="Enter room name">
+                    <button id="create-room">Create Room</button>
+                </div>
+            </div>
+            
+        </div>
+    
+        <div class="join-room">
+            <h2>Join a Room</h2>
+            <h3>Available Rooms:</h3>
+            <ul id="room-list">
+                <!-- Room list will be populated here by JavaScript -->
+            </ul>
+        </div>
+    </div>
+    
+
+    <script>
+        const socket = io.connect("http://127.0.0.1:5000");
+
+        function updateRoomList(rooms) {
+            const roomList = document.getElementById('room-list');
+            roomList.innerHTML = '';
+            rooms.forEach(room => {
+                const li = document.createElement('li');
+                li.textContent = room;
+                li.onclick = () => joinRoom(room); // Enable joining a room
+                roomList.appendChild(li);
+            });
+        }
+
+        // Listen for the room list on connect
+        socket.on('room_list', (rooms) => {
+            updateRoomList(rooms);
+        });
+
+        // Create room and automatically join it
+        document.getElementById('create-room').onclick = () => {
+            const roomName = document.getElementById('room-input').value;
+            if (roomName) {
+                socket.emit('create_room', { room_name: roomName });
+                document.getElementById('room-input').value = ''; // Clear input
+
+                // Automatically join the room after creation
+                joinRoom(roomName); // Call joinRoom to redirect to the chat page
+            }
+        };
+
+        // Join room function
+        function joinRoom(room) {
+            const username = "{{ current_user.username }}"; // Use the current username
+            window.location.href = `/chat?username=${username}&room=${room}`; // Redirect to chat
+        }
+    </script>
+</body>
+
+</html>
