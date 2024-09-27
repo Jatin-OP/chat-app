@@ -2,5 +2,4 @@ flask
 flask-socketio
 eventlet
 pymongo
-flask_login
 werkzeug
