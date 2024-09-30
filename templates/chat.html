@@ -11,14 +11,12 @@
 <body> 
     <br>
     <nav> 
-        <h1>Welcome to chat room <span>{{room}}</span></h1>
+        <h1>Welcome to chat room <span>{{ room }}</span></h1>
         <button id="leave-room-button">Leave Room</button>
     </nav>
     <br><br><br>
     <div id="chat-container">
-        <div id="messages">
-
-        </div>
+        <div id="messages"></div>
         
         <form id="message_input_form">
             <input type="text" id="message_input" placeholder="Enter your message here">
@@ -28,42 +26,42 @@
     
     <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
     <script>
-        const socket = io.connect("http://127.0.0.1:5000");
+        const socket = io.connect("http://0.0.0.0:6969");
 
+        // Retrieve username and room from the server-side variables
+        const username = "{{ username }}";
+        const room = "{{ room }}";
+
+        // Emit join room event on connection
         socket.on('connect', function () {
-            socket.emit('join_room', {
-                username: "{{ username }}",
-                room: "{{ room }}"
-            });
+            socket.emit('join_room', { username: username, room: room });
 
             let message_input = document.getElementById('message_input');
 
+            // Handle message input form submission
             document.getElementById('message_input_form').onsubmit = function (e) {
                 e.preventDefault();
                 let message = message_input.value.trim();
                 if (message.length) {
-                    socket.emit('send_message', {
-                        username: "{{ username }}",
-                        room: "{{ room }}",
-                        message: message
-                    });
+                    // Emit message to the server
+                    socket.emit('send_message', { username: username, room: room, message: message });
+                    message_input.value = ''; // Clear input
+                    message_input.focus(); // Focus on input again
                 }
-                message_input.value = '';
-                message_input.focus();
             };
         });
 
+        // Listen for new user announcements
         socket.on('join_room_announcement', function (data) {
-            console.log(data);
-            if (data.username !== "{{ username }}") {
+            if (data.username !== username) {
                 const newNode = document.createElement('div');
                 newNode.innerHTML = `<b>${data.username}</b> has joined the room`;
                 document.getElementById('messages').appendChild(newNode);
             }
         });
 
+        // Listen for incoming messages
         socket.on('receive_message', function (data) {
-            console.log(data);
             const newNode = document.createElement('div');
             newNode.innerHTML = `<b>${data.username}:&nbsp;</b> ${data.message}`;
             document.getElementById('messages').appendChild(newNode);
@@ -71,10 +69,7 @@
 
         // Leave room functionality
         document.getElementById('leave-room-button').onclick = function() {
-            socket.emit('leave_room', {
-                username: "{{ username }}",
-                room: "{{ room }}"
-            });
+            socket.emit('leave_room', { username: username, room: room });
             // Redirect to home or room list page after leaving
             window.location.href = '/';
         };

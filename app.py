@@ -73,7 +73,8 @@ def home():
 def chat():
     username = request.args.get('username')
     room = request.args.get('room')
-
+    print('*'*100)
+    print(username , room )
     if username and room:
         return render_template('chat.html', username=username, room=room)
     else:

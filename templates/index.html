@@ -45,7 +45,7 @@
     
 
     <script>
-        const socket = io.connect("http://127.0.0.1:5000");
+        const socket = io.connect("http://0.0.0.0:6969");
 
         function updateRoomList(rooms) {
             const roomList = document.getElementById('room-list');
@@ -72,13 +72,15 @@
 
                 // Automatically join the room after creation
                 joinRoom(roomName); // Call joinRoom to redirect to the chat page
-            }
+            }s
         };
 
         // Join room function
         function joinRoom(room) {
+            console.log('********************************')
+            console.log('room   ' , room)
             const username = "{{ current_user.username }}"; // Use the current username
-            window.location.href = `/chat?username=${username}&room=${room}`; // Redirect to chat
+            window.location.href = `/chat?username=${username}&room=${room}`;
         }
     </script>
 </body>
