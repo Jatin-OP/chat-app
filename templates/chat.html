@@ -26,9 +26,11 @@
     
     <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
     <script>
-        const socket = io.connect("http://0.0.0.0:5000");
+        // Connect to the Socket.IO server
+        const socket = io.connect(window.location.origin);
 
-        // Retrieve username and room from the server-side variables
+
+        // Retrieve username and room from server-side variables
         const username = "{{ username }}";
         const room = "{{ room }}";
 
@@ -36,13 +38,13 @@
         socket.on('connect', function () {
             socket.emit('join_room', { username: username, room: room });
 
-            let message_input = document.getElementById('message_input');
+            const message_input = document.getElementById('message_input');
 
             // Handle message input form submission
             document.getElementById('message_input_form').onsubmit = function (e) {
                 e.preventDefault();
-                let message = message_input.value.trim();
-                if (message.length) {
+                const message = message_input.value.trim();
+                if (message) {
                     // Emit message to the server
                     socket.emit('send_message', { username: username, room: room, message: message });
                     message_input.value = ''; // Clear input

@@ -4,3 +4,4 @@ eventlet
 pymongo
 werkzeug
 flask_login
+os

@@ -45,7 +45,7 @@
     
 
     <script>
-        const socket = io.connect("http://0.0.0.0:5000");
+        const socket = io.connect(window.location.origin);
 
         function updateRoomList(rooms) {
             const roomList = document.getElementById('room-list');

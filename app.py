@@ -2,7 +2,7 @@ from db import get_user, save_user
 from flask import Flask, render_template, request, redirect, url_for
 from flask_socketio import SocketIO, join_room, emit
 from flask_login import current_user, login_user, login_required, logout_user, LoginManager
-
+import os
 app = Flask(__name__)
 app.secret_key = "lucifer"
 socketio = SocketIO(app, cors_allowed_origins="*")
@@ -119,4 +119,4 @@ def logout():
     return redirect(url_for('login'))
 
 if __name__ == "__main__":
-    socketio.run(app, host="0.0.0.0", port=5000, debug=True)  # Adjust the port as needed
+    socketio.run(app, host="0.0.0.0", port=5000, debug=True) 
